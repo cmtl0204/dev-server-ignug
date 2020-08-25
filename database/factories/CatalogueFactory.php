@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Catalogue;
+use App\Models\Ignug\Catalogue;
 use Faker\Generator as Faker;
 
 $factory->define(Catalogue::class, function (Faker $faker) {

@@ -49,10 +49,10 @@ class TaskController extends Controller
         $teacher = Teacher::where('user_id', $request->user_id)->first();
         $attendances = $teacher->attendances()
             ->with(['tasks' => function ($query) {
-                $query->with('type')->where('state_id', '<>', '3');
+                $query->with('type')->where('state_id', '<>', 3);
             }])
             ->with('type')
-            ->where('state_id', '<>', '3')
+            ->where('state_id', '<>', 3)
             ->whereBetween('date', array($request->start_date, $request->end_date))
             ->get();
 

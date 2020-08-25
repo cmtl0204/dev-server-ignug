@@ -37,6 +37,7 @@ class AuthController extends Controller
 
         ]);
         $user = User::where('user_name', $request->user_name)->with('roles')->first();
+
         if (!$user) {
             return response()->json([
                 'errors' => [

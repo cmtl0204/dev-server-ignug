@@ -26,6 +26,6 @@ class CreateJobLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::connection('pgsql-job-board')->dropIfExists('job_locations');
+        Schema::connection('pgsql-job-board')->dropIfExists('locations');
     }
 }

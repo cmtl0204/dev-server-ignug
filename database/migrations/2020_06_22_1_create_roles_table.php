@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->id();
             $table->string('code', 20);
             $table->string('name', 100);
+            $table->foreignId('system_id')->constrained('ignug.catalogues');
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

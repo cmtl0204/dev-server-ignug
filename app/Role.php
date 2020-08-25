@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Ignug\Catalogue;
 use App\Models\State;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -30,5 +31,10 @@ class Role extends Model implements Auditable
     public function state()
     {
         return $this->belongsTo(State::class);
+    }
+
+    public function system()
+    {
+        return $this->belongsTo(Catalogue::class);
     }
 }
