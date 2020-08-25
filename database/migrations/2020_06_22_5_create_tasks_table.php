@@ -13,14 +13,14 @@ class CreateTasksTable extends Migration
      */
     public function up()
     {
-        Schema::connection('pgsql-ignug')->create('tasks', function (Blueprint $table) {
+        Schema::connection('pgsql-attendance')->create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->morphs('taskable');
+            $table->foreignId('attendance_id')->constrained();
             $table->string('description', 300)->nullable();
             $table->integer('percentage_advance')->default(0);
             $table->string('observations', 500)->nullable();
             $table->foreignId('type_id')->constrained('catalogues');
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ class CreateTasksTable extends Migration
      */
     public function down()
     {
-        Schema::connection('pgsql-ignug')->dropIfExists('tasks');
+        Schema::connection('pgsql-attendance')->dropIfExists('tasks');
     }
 }

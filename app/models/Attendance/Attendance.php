@@ -5,13 +5,12 @@ namespace App\Models\Attendance;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Ignug\State;
-use App\Models\Ignug\Catalogue;
 
 class Attendance extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'pgsql-ignug';
+    protected $connection = 'pgsql-attendance';
     protected $fillable = [
         'date'
     ];
@@ -37,11 +36,11 @@ class Attendance extends Model implements Auditable
 
     public function workdays()
     {
-        return $this->morphMany(Workday::class, 'workdayable');
+        return $this->hasMany(Workday::class);
     }
 
     public function tasks()
     {
-        return $this->morphMany(Task::class, 'taskable');
+        return $this->hasMany(Task::class);
     }
 }

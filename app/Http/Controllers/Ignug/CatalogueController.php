@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Ignug;
 
 use App\Http\Controllers\Controller;
-use App\Models\Ignug\Catalogue;
+use App\Models\Attendance\Catalogue;
 use Illuminate\Http\Request;
 
 class CatalogueController extends Controller

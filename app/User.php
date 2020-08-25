@@ -3,9 +3,9 @@
 namespace App;
 
 use App\Models\Attendance;
-use App\Models\Catalogue;
-use App\Models\State;
-use App\Models\Teacher;
+use App\Models\Ignug\Catalogue;
+use App\Models\Ignug\State;
+use App\Models\Ignug\Teacher;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;

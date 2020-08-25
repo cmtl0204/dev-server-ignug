@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\Controller;
-use App\Models\Ignug\Catalogue;
+use App\Models\Attendance\Catalogue;
 use App\Models\Ignug\State;
 use App\Models\Ignug\Teacher;
 use App\Models\Attendance\Task;
@@ -141,8 +141,7 @@ class TaskController extends Controller
             'percentage_advance' => $dataTask['percentage_advance'],
             'observations' => $dataTask['observations']
         ]);
-        $tasks = Task::where('taskable_type', 'App\Models\Attendance')
-            ->where('taskable_id', $task['taskable_id'])
+        $tasks = Task::where('attendance_id', $task['attendance_id'])
             ->where('state_id', '<>', '3')
             ->get();
         return response()->json([
@@ -165,8 +164,7 @@ class TaskController extends Controller
         $state = State::findOrFail(3);
         $task->state()->associate($state);
         $task->save();
-        $tasks = Task::where('taskable_type', 'App\Models\Attendance')
-            ->where('taskable_id', $task['taskable_id'])
+        $tasks = Task::where('attendance_id', $task['attendance_id'])
             ->where('state_id', '<>', '3')
             ->get();
         return response()->json([
@@ -194,7 +192,7 @@ class TaskController extends Controller
 
         $type = Catalogue::findOrFail($data['type_id']);
         $state = State::findOrFail(1);
-        $task->taskable()->associate($attendance);
+        $task->attendance()->associate($attendance);
         $task->type()->associate($type);
         $task->state()->associate($state);
         $task->save();

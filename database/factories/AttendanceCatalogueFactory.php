@@ -2,11 +2,11 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Ignug\Teacher;
+use App\Models\Attendance\Catalogue;
 use Faker\Generator as Faker;
 
-$factory->define(Teacher::class, function (Faker $faker) {
+$factory->define(Catalogue::class, function (Faker $faker) {
     return [
-        'state_id' => 1
+
     ];
 });

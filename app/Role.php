@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Models\Ignug\Catalogue;
-use App\Models\State;
+use App\Models\Ignug\State;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 

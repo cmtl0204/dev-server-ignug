@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateInstitutionRequest;
 use App\Http\Requests\UpdateInstitutionRequest;
 use App\Models\Ignug\Institution;
-use App\Models\State;
+use App\Models\Ignug\State;
 use Illuminate\Http\Request;
 
 class InstitutionController extends Controller

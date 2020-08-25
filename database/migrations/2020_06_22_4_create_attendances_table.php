@@ -13,12 +13,12 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::connection('pgsql-ignug')->create('attendances', function (Blueprint $table) {
+        Schema::connection('pgsql-attendance')->create('attendances', function (Blueprint $table) {
             $table->id();
             $table->morphs('attendanceable');
             $table->date('date');
             $table->foreignId('type_id')->constrained('catalogues');
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::connection('pgsql-ignug')->dropIfExists('attendances');
+        Schema::connection('pgsql-attendance')->dropIfExists('attendances');
     }
 }

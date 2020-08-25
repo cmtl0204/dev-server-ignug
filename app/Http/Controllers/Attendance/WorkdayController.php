@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Attendance;
 
 use App\Models\Ignug\State;
 use App\Http\Controllers\Controller;
-use App\Models\Ignug\Catalogue;
+use App\Models\Attendance\Catalogue;
 use App\Models\Ignug\Teacher;
 use App\Models\Attendance\Workday;
 use App\Models\Attendance\Attendance;
@@ -100,15 +100,16 @@ class WorkdayController extends Controller
 
         $workday = Workday::findOrFail($dataWorkday['id']);
 
-        $workday->update([
-            'end_time' => $currentTime,
-            'duration' => $this->calculateDuration($workday->start_time, $currentTime),
-            'observations' => $dataWorkday['observations']
-        ]);
-
-        $workdays = Workday::where('workdayable_type', 'App\Models\Attendance')
-            ->where('workdayable_id', $workday['workdayable_id'])
-            ->where('state_id', '<>', 3)
+        if ($workday && !$workday->end_time) {
+            $workday->update([
+                'end_time' => $currentTime,
+                'duration' => $this->calculateDuration($workday->start_time, $currentTime),
+                'observations' => $dataWorkday['observations']
+            ]);
+        }
+        $state = State::where('code', '1')->first();
+        $workdays = $state->workdays()
+            ->where('attendance_id', $workday['attendance_id'])
             ->orderBy('start_time')
             ->get();
         return response()->json([
@@ -131,8 +132,7 @@ class WorkdayController extends Controller
         $state = State::findOrFail(3);
         $workday->state()->associate($state);
         $workday->save();
-        $workdays = Workday::where('workdayable_type', 'App\Models\Attendance')
-            ->where('workdayable_id', $workday['workdayable_id'])->orderBy('start_time')
+        $workdays = Workday::where('attendance_id', $workday['attendance_id'])->orderBy('start_time')
             ->where('state_id', '<>', 3)
             ->get();
         return response()->json([
@@ -166,7 +166,7 @@ class WorkdayController extends Controller
         ]);
         $type = Catalogue::where('code', $data['type'])->first();
         $state = State::findOrFail(1);
-        $workday->workdayable()->associate($attendance);
+        $workday->attendance()->associate($attendance);
         $workday->type()->associate($type);
         $workday->state()->associate($state);
         $workday->save();

@@ -2,8 +2,11 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Ignug\State;
-use App\Models\Ignug\Catalogue;
+use App\Models\Attendance\Catalogue as AttendanceCatalogue;
+use App\Models\Ignug\Catalogue as IgnugCatalogue;
 use App\Role;
+use App\User;
+use \App\Models\Ignug\Teacher;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
         // Catalogues
         // Workday Principal
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'work',
             'name' => 'Jornada',
             'type' => 'workdays.principal',
@@ -42,7 +45,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Workday Secundary
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'lunch',
             'name' => 'Almuerzo',
             'type' => 'workdays.secondary',
@@ -51,28 +54,28 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Task Processes
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'academic',
             'name' => 'ACADEMICO',
             'type' => 'tasks.process',
             'icon' => 'pi pi-calendar',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'administrative',
             'name' => 'ADMINISTRATIVO',
             'type' => 'tasks.process',
             'icon' => 'pi pi-calendar',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'entailment',
             'name' => 'VINCULACION',
             'type' => 'tasks.process',
             'icon' => 'pi pi-calendar',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'code' => 'investigation',
             'name' => 'INVESTIGACION',
             'type' => 'tasks.process',
@@ -81,7 +84,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Task Subprocesses academic
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '1',
             'name' => 'IMPARTIR CLASES PRESENCIALES, VIRTUALES O EN LINEA',
@@ -89,7 +92,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '2',
             'name' => 'PREPARACION Y ACTUALIZACION DE CLASES, SEMINARIOS, TALLERES Y OTROS',
@@ -97,7 +100,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '3',
             'name' => 'DISEÑO Y ELABORACION DE GUIAS, MATERIAL DIDACTICO Y SYLLABUS',
@@ -105,7 +108,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '4',
             'name' => 'ORIENTACION Y ACOMPAÑAMIENTO A TRAVES DE TUTORIAS PRESENCIALES O VIRTUALES, INDIVIDUALES O GRUPALES',
@@ -113,7 +116,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '5',
             'name' => 'ELABORACION DE REPORTES DE NIVEL ACADEMICO REFERENTE A EVALUACIONES, TRABAJOS Y RENDIMIENTO DEL ESTUDIANTE',
@@ -121,7 +124,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '6',
             'name' => 'VISITAS DE CAMPO',
@@ -129,7 +132,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '7',
             'name' => 'PREPARACION, ELABORACION, APLICACION Y CALIFICACION DE EXAMENES Y  PRACTICAS ',
@@ -139,7 +142,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Task Subprocesses administrative
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 4,
             'code' => '1',
             'name' => 'PARTICIPACION EN PROCESOS DEL SISTEMA NACIONAL DE EVALUACION PARA INGRESO A UNIVERSIDADES',
@@ -147,7 +150,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 4,
             'code' => '2',
             'name' => 'ACTIVIDADES DE DIRECCION O GESTION EN SUS DISTINTOS NIVELES DE ORGANIZACION ACADEMICA E INSTITUCIONAL',
@@ -155,7 +158,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 4,
             'code' => '3',
             'name' => 'REUNIONES DE ORGANO COLEGIADO SUPERIOR',
@@ -163,7 +166,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 4,
             'code' => '4',
             'name' => 'DISEÑO DE PROYECTOS DE CARRERAS Y PROGRAMAS DE ESTUDIOS',
@@ -171,7 +174,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 4,
             'code' => '5',
             'name' => 'ACTIVIDADES RELACIONADAS CON LA EVALUACION INSTITUCIONAL EXTERNA',
@@ -181,7 +184,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Task Subprocesses entailment
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 5,
             'code' => '1',
             'name' => 'DIRECCION SEGUIMIENTO Y EVALUACION DE PRACTICAS PRE PROFESIONALES',
@@ -189,7 +192,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 5,
             'code' => '2',
             'name' => 'DISEÑO E IMPARTICION DE CURSOS DE EDUCACION CONTINUA O DE CAPACITACION Y ACTUALIZACION',
@@ -197,7 +200,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 5,
             'code' => '3',
             'name' => 'PARTICIPACION EN ACTIVIDADES DE PROYECTOS SOCIALES, ARTISTICOS, PRODUCTIVOS Y EMPRESARIALES DE VINCULACION CON LA SOCIEDAD',
@@ -205,7 +208,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 5,
             'code' => '4',
             'name' => 'ELABORACION DE INFORMES DE SEGUIMIENTO DE PROYECTOS DE VINCULACION',
@@ -215,7 +218,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Task Subprocesses investigation
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '1',
             'name' => 'GESTIONAR PROYECTOS DE INVESTIGACION, COMUNITARIOS Y/O DE EMPRENDIMIENTO',
@@ -223,7 +226,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '2',
             'name' => 'DIRECCION Y TUTORIAS PARA LA ELABORACION DE TRABAJOS PARA LA OBTENCION DE TITULO',
@@ -231,7 +234,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 3,
             'code' => '3',
             'name' => 'DIRECCION Y PARTICIPACION DE PROYECTOS DE INVESTIGACION E INNOVACION BASICA, APLICADA, TECNOLOGICA',
@@ -239,7 +242,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '4',
             'name' => 'REALIZACION DE INVESTIGACION PARA LA RECUPERACION, FORTALECIMIENTO Y POTENCIAC ION DE LOS SABERES ANCESTRALES',
@@ -247,7 +250,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '5',
             'name' => 'PARTICIPACION EN CONGRESOS, SEMINARIOS Y CONFERENCIAS PARA LA PRESENTACION DE AVANCES Y RESULTADOS DE SUS INVESTIGACIONES',
@@ -255,7 +258,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '6',
             'name' => 'DISEÑO, GESTION Y PARTICIPACION EN REDES Y PROGRAMAS DE INVESTIGACION LOCAL NACIONAL E INTERNACIONAL',
@@ -263,7 +266,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '7',
             'name' => 'PARTICIPACION EN COMITES O CONSEJOS ACADEMICOS Y EDITORIALES DE REVISTAS CIENTIFICAS Y ACADEMICAS INDEXADAS, Y DE ALTO IMPACTO CIENTIFICO O ACADEMICO',
@@ -271,7 +274,7 @@ class DatabaseSeeder extends Seeder
             'icon' => 'pi pi-briefcase',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(AttendanceCatalogue::class)->create([
             'parent_code_id' => 6,
             'code' => '8',
             'name' => 'DIFUSION DE RESULTADOS Y BENEFICIOS SOCIALES DE LA INVESTIGACION, A TRAVES DE PUBLICACIONES, PRODUCCIONES ARTISTICAS, ACTUACIONES, CONCIERTOS, CREACION U ORGANIZACION DE INSTALACIONES Y DE EXPOSICIONES, ENTRE OTROS',
@@ -281,55 +284,55 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Ethnic origin
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'INDIGENA',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'AFROECUATORIANO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '3',
             'name' => 'NEGRO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '4',
             'name' => 'MULATO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '5',
             'name' => 'MONTUBIO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '6',
             'name' => 'MESTIZO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '7',
             'name' => 'BLANCO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '8',
             'name' => 'OTRO',
             'type' => 'ethnic_origin',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '9',
             'name' => 'NO REGISTRA',
             'type' => 'ethnic_origin',
@@ -337,26 +340,26 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Sex
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'HOMBRE',
             'type' => 'sex',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'MUJER',
             'type' => 'sex',
             'state_id' => 1,
         ]);
         // Gender
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'MASCULINO',
             'type' => 'gender',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'FEMENINO',
             'type' => 'gender',
@@ -364,13 +367,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Indetification Type
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'CEDULA',
             'type' => 'indetification_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'PASAPORTE',
             'type' => 'indetification_type',
@@ -378,49 +381,49 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Blood Type
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'A+',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'A-',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '3',
             'name' => 'B+',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '4',
             'name' => 'B-',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '5',
             'name' => 'AB+',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '6',
             'name' => 'AB-',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '7',
             'name' => 'O+',
             'type' => 'blood_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '8',
             'name' => 'O-',
             'type' => 'blood_type',
@@ -428,25 +431,25 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // career modality
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'PRESENCIAL',
             'type' => 'career_modality',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'SEMI-PRESENCIAL',
             'type' => 'career_modality',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '3',
             'name' => 'DISTANCIA',
             'type' => 'career_modality',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '4',
             'name' => 'DUAL',
             'type' => 'career_modality',
@@ -454,13 +457,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // career type
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'TECNICATURA',
             'type' => 'career_type',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'TECNOLOGIA',
             'type' => 'career_type',
@@ -468,21 +471,21 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // location
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => 'ec',
             'name' => 'ECUADOR',
             'type' => 'country',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
-            'parent_code_id' => 60,
+        factory(IgnugCatalogue::class)->create([
+            'parent_code_id' => 30,
             'code' => '17',
             'name' => 'PICHINCHA',
             'type' => 'province',
             'state_id' => 1,
         ]);
-        factory(Catalogue::class)->create([
-            'parent_code_id' => 61,
+        factory(IgnugCatalogue::class)->create([
+            'parent_code_id' => 30,
             'code' => '1',
             'name' => 'QUITO',
             'type' => 'canton',
@@ -490,7 +493,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // roles system
-        factory(Catalogue::class)->create([
+        factory(IgnugCatalogue::class)->create([
             'code' => 'attendance',
             'name' => 'Attendance',
             'type' => 'system',
@@ -500,30 +503,33 @@ class DatabaseSeeder extends Seeder
         factory(Role::class)->create([
             'code' => '1',
             'name' => 'DOCENTE',
-            'system_id' => 63,
+            'system_id' => 1,
             'state_id' => 1,
         ]);
         factory(Role::class)->create([
             'code' => '2',
             'name' => 'ADMINISTRATIVO',
-            'system_id' => 63,
+            'system_id' => 1,
             'state_id' => 1,
         ]);
 
 
-        // factory(App\User::class, 100)->create();
+        factory(User::class, 100)->create()->each(function ($user) {
+            $user->teacher()->save(factory(Teacher::class)->make());
+            $user->roles()->attach(1);
+        });
         // factory(App\Models\JobBoard::class, 10)->create();
 
         /*
-        drop schema attendance cascade;
-        drop schema ignug cascade;
-        drop schema job_board cascade;
-        drop schema web cascade;
+            drop schema if exists attendance cascade;
+            drop schema if exists ignug cascade;
+            drop schema if exists job_board cascade;
+            drop schema if exists web cascade;
 
-        create schema attendance;
-        create schema ignug;
-        create schema job_board;
-        create schema web;
+            create schema attendance;
+            create schema ignug;
+            create schema job_board;
+            create schema web;
         */
     }
 }

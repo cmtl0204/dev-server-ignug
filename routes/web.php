@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Ignug\State;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
 });
-Route::get('password_generate',function (){
+Route::get('password_generate', function () {
     return \Illuminate\Support\Facades\Hash::make('123');
 });
 

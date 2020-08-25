@@ -5,12 +5,12 @@ namespace App\Models\Attendance;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Ignug\State;
-use App\Models\Ignug\Catalogue;
+use App\Models\Attendance\Catalogue;
 
 class Task extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
-    protected $connection = 'pgsql-ignug';
+    protected $connection = 'pgsql-attendance';
 
     protected $fillable = [
         'description',
@@ -18,10 +18,6 @@ class Task extends Model implements Auditable
         'observations'
     ];
 
-    public function taskable()
-    {
-        return $this->morphTo();
-    }
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);

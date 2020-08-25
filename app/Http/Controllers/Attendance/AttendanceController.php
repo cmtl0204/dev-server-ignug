@@ -26,21 +26,21 @@ class AttendanceController extends Controller
        authentication.users.second_lastname,
        authentication.users.first_name,
        authentication.users.second_name,
-        min(case when catalogues.code = 'work' then ignug.workdays.start_time end) as start_time,
-        max(case when catalogues.code = 'work' then ignug.workdays.end_time end) as end_time,
+        min(case when catalogues.code = 'work' then workdays.start_time end) as start_time,
+        max(case when catalogues.code = 'work' then workdays.end_time end) as end_time,
        sum(case when catalogues.code = 'work' then workdays.duration end) - sum(case when catalogues.code = 'lunch' then workdays.duration end) as duration,
        sum(case when catalogues.code = 'lunch' then workdays.duration end) as lunch
-        from ignug.attendances
+        from attendance.attendances
          inner join ignug.teachers on attendances.attendanceable_id = teachers.id
-         inner join ignug.workdays on attendances.id = workdays.workdayable_id
+         inner join attendance.workdays on attendances.id = workdays.attendance_id
          inner join authentication.users on users.id = teachers.user_id
-         inner join ignug.catalogues on workdays.type_id = catalogues.id
+         inner join attendance.catalogues on workdays.type_id = catalogues.id
          inner join ignug.states state_users on users.state_id = state_users.id
                  inner join ignug.states state_workdays on workdays.state_id = state_workdays.id
             where
             state_users.code = '1'
             and state_workdays.code = '1'
-            and ignug.attendances.date between '" . $request->start_date . "' and '" . $request->end_date . "'" .
+            and attendances.date between '" . $request->start_date . "' and '" . $request->end_date . "'" .
             "group by attendances.id, attendances.date,users.identification,users.first_lastname,users.second_lastname,users.first_name,users.second_name
             order by attendances.date, authentication.users.first_lastname, start_time;");
 
@@ -66,17 +66,17 @@ class AttendanceController extends Controller
                workdays.duration,
                workdays.id,
                type_workdays.name as type_workdays
-        from ignug.attendances
-                 inner join ignug.workdays on attendances.id = workdays.workdayable_id
+        from    attendance.attendances
+                 inner join attendance.workdays on attendances.id = workdays.attendance_id
                  inner join ignug.teachers on attendances.attendanceable_id = teachers.id
                  inner join authentication.users on users.id = teachers.user_id
-                 inner join ignug.catalogues type_workdays on workdays.type_id = type_workdays.id
+                 inner join attendance.catalogues type_workdays on workdays.type_id = type_workdays.id
                  inner join ignug.states state_users on users.state_id = state_users.id
                  inner join ignug.states state_workdays on workdays.state_id = state_workdays.id
         where (type_workdays.code = 'work' or type_workdays.code = 'lunch')
                 and state_users.code = '1'
                 and state_workdays.code = '1'
-                and ignug.attendances.date between '" . $request->start_date . "' and '" . $request->end_date . "'" .
+                and attendances.date between '" . $request->start_date . "' and '" . $request->end_date . "'" .
             "order by attendances.date, authentication.users.first_lastname, workdays.start_time;");
 
         return response()->json([
