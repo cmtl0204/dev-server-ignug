@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\File;
+use App\Models\Ignug\File;
 use Faker\Generator as Faker;
 
 $factory->define(File::class, function (Faker $faker) {
