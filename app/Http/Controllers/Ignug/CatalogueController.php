@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Ignug;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attendance\Catalogue;
+use App\Models\Ignug\Catalogue;
 use Illuminate\Http\Request;
 
 class CatalogueController extends Controller
@@ -18,8 +18,7 @@ class CatalogueController extends Controller
         $catalogues = Catalogue::where('type', $request->type)->orderBy('name')->get();
         return response()->json([
                 'data' => [
-                    'type' => 'catalogues',
-                    'attributes' => $catalogues
+                    'catalogues' => $catalogues
                 ]]
             , 200);
     }

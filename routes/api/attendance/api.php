@@ -18,7 +18,7 @@ Route::group(['prefix' => 'catalogues'], function () {
         Route::get('', 'Ignug\CatalogueController@filter');
     });
 });
-
+// http://127.0.0.1:8000/api/attendance/wokdays/all
 Route::group(['prefix' => 'workdays'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('all', 'Attendance\WorkdayController@all');

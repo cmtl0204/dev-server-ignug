@@ -13,5 +13,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('professionals', function(){
 
+    $users = \App\User::get();
+    return response()->json([
+        'data' => [
+            'type' => 'users',
+            'attributes' => $users
+        ]
+    ], 200);
+});
 

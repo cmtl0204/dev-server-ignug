@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ignug\Catalogue;
+use App\Models\Ignug\State;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,9 +26,37 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function user(Request $request)
+    public function indexUser(Request $request)
     {
-        return response()->json($request->user());
+        $state = State::where('code', '1')->first();
+        $users = $state->users()->with('ethnicOrigin')
+            ->with('location')
+            ->with('identificationType')
+            ->with('sex')
+            ->with('gender')
+            ->get();
+        return response()->json([
+            'data' => [
+                'users' => $users
+            ]
+        ], 200);
+
+    }
+
+    public function showUser($id)
+    {
+        $user = User::with('ethnicOrigin')
+            ->with('location')
+            ->with('identificationType')
+            ->with('sex')
+            ->with('gender')
+            ->findOrFail($id);
+        return response()->json([
+            'data' => [
+                'user' => $user
+            ]
+        ], 200);
+
     }
 
     public function login(Request $request)
@@ -63,23 +93,34 @@ class AuthController extends Controller
             'token' => $accessToken], 201);
     }
 
-    private function createUser($dataUser, $role)
+    public function createUser(Request $request)
     {
-        $role = Role::findOrFail($role);
-        $user = new User([
-            'name1' => strtoupper(trim($dataUser['name1'])),
-            'name2' => strtoupper(trim($dataUser['name2'])),
-            'last_name1' => strtoupper(trim($dataUser['last_name1'])),
-            'last_name2' => strtoupper(trim($dataUser['last_name2'])),
-            'user_name' => strtoupper(trim($dataUser['user_name'])),
-            'phone' => strtoupper(trim($dataUser['phone'])),
-            'email' => strtolower(trim($dataUser['email'])),
-            'password' => Hash::make(trim($dataUser['password'])),
-            'state' => 'ACTIVE'
-        ]);
-        $user->role()->associate($role);
+        $data = $request->json()->all();
+        $dataUser = $data['user'];
+        $user = new User();
+
+        $user->identification = strtoupper(trim($dataUser['identification']));
+        $user->user_name = strtoupper(trim($dataUser['user_name']));
+        $user->first_name = strtoupper(trim($dataUser['first_name']));
+        $user->first_lastname = strtoupper(trim($dataUser['first_lastname']));
+        $user->birthdate = trim($dataUser['birthdate']);
+        $user->email = strtolower(trim($dataUser['email']));
+        $user->password = Hash::make(trim($dataUser['password']));
+
+        $ethnicOrigin = Catalogue::findOrFail($dataUser['ethnic_origin']['id']);
+        $location = Catalogue::findOrFail($dataUser['location']['id']);
+        $identificationType = Catalogue::findOrFail($dataUser['identification_type']['id']);
+        $sex = Catalogue::findOrFail($dataUser['sex']['id']);
+        $gender = Catalogue::findOrFail($dataUser['gender']['id']);
+        $state = Catalogue::where('code', '1')->first();
+        $user->ethnicOrigin()->associate($ethnicOrigin);
+        $user->location()->associate($location);
+        $user->identificationType()->associate($identificationType);
+        $user->sex()->associate($sex);
+        $user->gender()->associate($gender);
+        $user->state()->associate($state);
         $user->save();
-        return $user;
+        return response()->json(['message' => 'Usuario creado', 'user' => $user], 201);
     }
 
     public function updateUser(Request $request)
@@ -87,17 +128,36 @@ class AuthController extends Controller
         $data = $request->json()->all();
         $dataUser = $data['user'];
         $user = User::findOrFail($dataUser['id']);
-        $user->update([
-            'name1' => strtoupper(trim($dataUser['name1'])),
-            'name2' => strtoupper(trim($dataUser['name2'])),
-            'last_name1' => strtoupper(trim($dataUser['last_name1'])),
-            'last_name2' => strtoupper(trim($dataUser['last_name2'])),
-            'user_name' => strtoupper(trim($dataUser['user_name'])),
-            'phone' => strtoupper(trim($dataUser['phone'])),
-            'email' => strtolower(trim($dataUser['email'])),
-            'password' => Hash::make(trim($dataUser['password'])),
-        ]);
+        $user->identification = $dataUser['identification'];
+        $user->user_name = strtoupper(trim($dataUser['user_name']));
+        $user->first_name = strtoupper(trim($dataUser['first_name']));
+        $user->first_lastname = strtoupper(trim($dataUser['first_lastname']));
+        $user->birthdate = trim($dataUser['birthdate']);
+        $user->email = strtolower(trim($dataUser['email']));
+
+        $ethnicOrigin = Catalogue::findOrFail($dataUser['ethnic_origin']['id']);
+        $location = Catalogue::findOrFail($dataUser['location']['id']);
+        $identificationType = Catalogue::findOrFail($dataUser['identification_type']['id']);
+        $sex = Catalogue::findOrFail($dataUser['sex']['id']);
+        $gender = Catalogue::findOrFail($dataUser['gender']['id']);
+        $state = Catalogue::where('code', '1')->first();
+        $user->ethnicOrigin()->associate($ethnicOrigin);
+        $user->location()->associate($location);
+        $user->identificationType()->associate($identificationType);
+        $user->sex()->associate($sex);
+        $user->gender()->associate($gender);
+        $user->state()->associate($state);
+        $user->save();
         return response()->json(['message' => 'Usuario actualizado', 'user' => $user], 201);
+    }
+
+    public function destroyUser($id)
+    {
+        $state = Catalogue::where('code', '3')->first();
+        $user = User::findOrFail($id);
+        $user->state()->associate($state);
+        $user->save();
+        return response()->json(['message' => 'Usuario eliminado', 'user' => $user], 201);
     }
 
     public function changePassword(Request $request)

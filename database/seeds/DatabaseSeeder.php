@@ -370,13 +370,13 @@ class DatabaseSeeder extends Seeder
         factory(IgnugCatalogue::class)->create([
             'code' => '1',
             'name' => 'CEDULA',
-            'type' => 'indetification_type',
+            'type' => 'identification_type',
             'state_id' => 1,
         ]);
         factory(IgnugCatalogue::class)->create([
             'code' => '2',
             'name' => 'PASAPORTE',
-            'type' => 'indetification_type',
+            'type' => 'identification_type',
             'state_id' => 1,
         ]);
 
