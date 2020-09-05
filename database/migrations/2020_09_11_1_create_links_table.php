@@ -15,9 +15,14 @@ class CreateLinksTable extends Migration
     {
         Schema::connection('pgsql-web')->create('links', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
-            $table->string('url');
-            $table->string('icon');
+            $table->morphs('linkable');
+            $table->text('image');
+            $table->text('url');
+            $table->text('name');
+            $table->text('icon');
+            $table->text('description')->nullable();
+            $table->foreignId('status_id')->constrained('catalogues');
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }

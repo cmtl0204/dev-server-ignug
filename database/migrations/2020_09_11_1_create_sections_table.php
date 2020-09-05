@@ -15,10 +15,11 @@ class CreateSectionsTable extends Migration
     {
         Schema::connection('pgsql-web')->create('sections', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->string('state');
-            $table->string('order');
+            $table->text('name');
+            $table->text('description');
+            $table->integer('order');
+            $table->foreignId('status_id')->constrained('catalogues');
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }

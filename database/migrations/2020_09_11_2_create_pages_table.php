@@ -15,9 +15,11 @@ class CreatePagesTable extends Migration
     {
         Schema::connection('pgsql-web')->create('pages', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('menu_id')->constrained();
+            $table->foreignId('section_id')->constrained();
             $table->string('title');
-            $table->string('subtitle');
-            $table->string('description');
+            $table->text('subtitle');
+            $table->text('description');
             $table->timestamps();
         });
     }

@@ -15,9 +15,14 @@ class CreateMenusTable extends Migration
     {
         Schema::connection('pgsql-web')->create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('parent_code_id')->nullable();
+            $table->foreignId('parent_code_id')->nullable()->constrained('menus');
+            $table->text('name');
+            $table->text('url');
+            $table->text('icon');
+            $table->text('description')->nullable();
+            $table->integer('order');
             $table->foreignId('type_id')->constrained('catalogues'); /*para ver si esta arriba o abajo */
+            $table->foreignId('status_id')->constrained('catalogues');
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

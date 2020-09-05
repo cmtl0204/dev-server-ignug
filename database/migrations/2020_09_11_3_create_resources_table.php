@@ -15,7 +15,14 @@ class CreateResourcesTable extends Migration
     {
         Schema::connection('pgsql-web')->create('resources', function (Blueprint $table) {
             $table->id();
+            $table->morphs('resourceable');
+            $table->text('url');
+            $table->text('name');
+            $table->text('description');
+            $table->integer('order');
             $table->foreignId('type_id')->constrained('catalogues');
+            $table->foreignId('status_id')->constrained('catalogues');
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }

@@ -15,7 +15,9 @@ class CreateSettingsTable extends Migration
     {
         Schema::connection('pgsql-web')->create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('value');
+            $table->text('name');
+            $table->text('description');
+            $table->text('value');
             $table->foreignId('type_id')->constrained('catalogues');
             $table->string('image');
             $table->timestamps();
