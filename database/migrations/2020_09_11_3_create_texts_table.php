@@ -17,6 +17,8 @@ class CreateTextsTable extends Migration
             $table->id();
             $table->foreignId('page_id')->constrained();
             $table->foreignId('type_id')->constrained('catalogues');
+            $table->text('title')->nullable();
+            $table->text('subtitle')->nullable();
             $table->text('description');
             $table->timestamps();
         });

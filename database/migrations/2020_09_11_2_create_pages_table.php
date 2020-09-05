@@ -18,8 +18,8 @@ class CreatePagesTable extends Migration
             $table->foreignId('menu_id')->constrained();
             $table->foreignId('section_id')->constrained();
             $table->string('title');
-            $table->text('subtitle');
-            $table->text('description');
+            $table->text('subtitle')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
