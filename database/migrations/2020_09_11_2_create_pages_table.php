@@ -15,8 +15,9 @@ class CreatePagesTable extends Migration
     {
         Schema::connection('pgsql-web')->create('pages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained();
-            $table->foreignId('section_id')->constrained();
+            $table->foreignId('menu_id')->nullable()->constrained();
+            $table->foreignId('template_id')->nullable()->constrained('catalogues');
+            $table->foreignId('section_id')->nullable()->constrained();
             $table->string('title');
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
