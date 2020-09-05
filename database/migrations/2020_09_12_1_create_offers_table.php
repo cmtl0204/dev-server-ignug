@@ -21,7 +21,7 @@ class CreateOffersTable extends Migration
             $table->string('email', 100);
             $table->string('phone', 20);
             $table->string('cell_phone', 20)->nullable();
-            $table->string('contract_type', 100);
+            $table->foreignId('contract_type_id')->constrained('catalogues');
             $table->string('position');
             $table->string('training_hours')->nullable();
             $table->string('experience_time')->nullable();
@@ -29,8 +29,8 @@ class CreateOffersTable extends Migration
             $table->string('working_day')->nullable();
             $table->string('number_jobs')->nullable();
             $table->date('start_date');
-            $table->date('finish_date');
-            $table->text('activities');
+            $table->date('end_date');
+            $table->json('activities');
             $table->text('aditional_information')->nullable();
             $table->foreignId('location_id')->constrained();
             $table->foreignId('state_id')->constrained('ignug.states');

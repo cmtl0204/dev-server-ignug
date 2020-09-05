@@ -17,7 +17,7 @@ class CreateOfferProfessionalTable extends Migration
             $table->id();
             $table->foreignId('professional_id')->constrained();
             $table->foreignId('offer_id')->constrained();
-            $table->foreignId('type_id')->constrained('catalogues');
+            $table->foreignId('status_id')->nullable()->constrained('catalogues');
             $table->timestamps();
         });
     }

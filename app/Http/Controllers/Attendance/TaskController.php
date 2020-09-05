@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Attendance;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance\Catalogue;
 use App\Models\Ignug\State;
-use App\Models\Ignug\Teacher;
 use App\Models\Attendance\Task;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -30,8 +30,8 @@ class TaskController extends Controller
      */
     public function all(Request $request)
     {
-        $teacher = Teacher::where('user_id', $request->user_id)->first();
-        $attendances = $teacher->attendances()
+        $user = User::findOrFail($request->user_id);
+        $attendances = $user->attendances()
             ->with(['tasks' => function ($query) {
                 $query->where('state_id', '<>', '3');
             }])->where('state_id', '<>', '3')->get();
@@ -46,8 +46,8 @@ class TaskController extends Controller
 
     public function getHistory(Request $request)
     {
-        $teacher = Teacher::where('user_id', $request->user_id)->first();
-        $attendances = $teacher->attendances()
+        $user = User::findOrFail($request->user_id);
+        $attendances = $user->attendances()
             ->with(['tasks' => function ($query) {
                 $query->with('type')->where('state_id', '<>', 3);
             }])
@@ -76,8 +76,8 @@ class TaskController extends Controller
         $data = $request->json()->all();
         $dataTask = $data['task'];
 
-        $teacher = Teacher::where('user_id', $request->user_id)->first();
-        $attendance = $teacher->attendances()->where('date', $currentDate)->first();
+        $user = User::findOrFail($request->user_id);
+        $attendance = $user->attendances()->where('date', $currentDate)->first();
         if ($attendance) {
             $this->createTask($dataTask, $attendance);
         } else {
@@ -101,14 +101,13 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Teacher $teacher
      * @return \Illuminate\Http\JsonResponse
      */
     public function getCurrenDate(Request $request)
     {
         $currentDate = Carbon::now()->format('Y/m/d/');
-        $teacher = Teacher::where('user_id', $request->user_id)->first();
-        $attendance = $teacher->attendances()->where('date', $currentDate)->first();
+        $user = User::findOrFail($request->user_id);
+        $attendance = $user->attendances()->where('date', $currentDate)->first();
         if (!$attendance) {
             return response()->json(['data' => null], 200);
         }
@@ -128,7 +127,7 @@ class TaskController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Teacher $teacher
+
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
@@ -155,7 +154,6 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Teacher $teacher
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)

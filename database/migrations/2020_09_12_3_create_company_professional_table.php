@@ -17,7 +17,7 @@ class CreateCompanyProfessionalTable extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained();
             $table->foreignId('professional_id')->constrained();
-            $table->foreignId('type_id')->constrained('catalogues');
+            $table->foreignId('status_id')->nullable()->constrained('catalogues');
             $table->timestamps();
         });
     }

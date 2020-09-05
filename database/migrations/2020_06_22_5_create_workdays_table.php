@@ -17,7 +17,7 @@ class CreateWorkdaysTable extends Migration
             $table->id();
             $table->foreignId('attendance_id')->constrained();
             $table->string('description', 300)->nullable();
-            $table->string('observations', 500)->nullable();
+            $table->json('observations')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->time('duration')->nullable();

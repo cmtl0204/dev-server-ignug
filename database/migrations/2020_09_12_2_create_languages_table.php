@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateLanguagesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up()
     {
         Schema::connection('pgsql-job-board')->create('languages', function (Blueprint $table) {

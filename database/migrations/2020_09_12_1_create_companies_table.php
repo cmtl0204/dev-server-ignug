@@ -19,6 +19,7 @@ class CreateCompaniesTable extends Migration
             $table->foreignId('type_id')->constrained('catalogues');
             $table->string('trade_name', 300);
             $table->string('comercial_activity', 500);
+            $table->string('web_page', 500);
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

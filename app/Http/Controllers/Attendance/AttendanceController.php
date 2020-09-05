@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance\Attendance;
+use App\Models\Attendance\Workday;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,8 @@ class AttendanceController extends Controller
        sum(case when catalogues.code = 'work' then workdays.duration end) - sum(case when catalogues.code = 'lunch' then workdays.duration end) as duration,
        sum(case when catalogues.code = 'lunch' then workdays.duration end) as lunch
         from attendance.attendances
-         inner join ignug.teachers on attendances.attendanceable_id = teachers.id
+         inner join authentication.users on attendances.attendanceable_id = users.id
          inner join attendance.workdays on attendances.id = workdays.attendance_id
-         inner join authentication.users on users.id = teachers.user_id
          inner join attendance.catalogues on workdays.type_id = catalogues.id
          inner join ignug.states state_users on users.state_id = state_users.id
                  inner join ignug.states state_workdays on workdays.state_id = state_workdays.id
@@ -46,14 +46,18 @@ class AttendanceController extends Controller
 
         return response()->json([
             'data' => [
-                'type' => 'attendances',
-                'attributes' => $attendances
+                'attendances' => $attendances
             ]
         ], 200);
     }
 
     public function detail(Request $request)
     {
+        $workdays = Workday::
+        with('attendance')
+            ->with('type')
+            ->get();
+        return $workdays;
         $attendances = DB::select("
         select attendances.date,
                authentication.users.identification,
@@ -64,12 +68,12 @@ class AttendanceController extends Controller
                workdays.start_time,
                workdays.end_time,
                workdays.duration,
-               workdays.id,
+               workdays.observations,
+               workdays.id as workday_id,
                type_workdays.name as type_workdays
         from    attendance.attendances
                  inner join attendance.workdays on attendances.id = workdays.attendance_id
-                 inner join ignug.teachers on attendances.attendanceable_id = teachers.id
-                 inner join authentication.users on users.id = teachers.user_id
+                 inner join authentication.users on attendances.attendanceable_id = users.id
                  inner join attendance.catalogues type_workdays on workdays.type_id = type_workdays.id
                  inner join ignug.states state_users on users.state_id = state_users.id
                  inner join ignug.states state_workdays on workdays.state_id = state_workdays.id
@@ -81,8 +85,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'data' => [
-                'type' => 'attendances',
-                'attributes' => $attendances
+                'attendances' => $attendances
             ]
         ], 200);
     }

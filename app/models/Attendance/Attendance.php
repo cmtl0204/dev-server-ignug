@@ -2,6 +2,7 @@
 
 namespace App\Models\Attendance;
 
+use App\Models\Ignug\Teacher;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Ignug\State;
@@ -42,5 +43,10 @@ class Attendance extends Model implements Auditable
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, Teacher::class);
     }
 }

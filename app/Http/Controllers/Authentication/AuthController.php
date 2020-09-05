@@ -66,7 +66,7 @@ class AuthController extends Controller
             'password' => 'required|string',
 
         ]);
-        $user = User::where('user_name', $request->user_name)->with('roles')->first();
+        $user = User::where('user_name', $request->user_name)->with('state')->first();
 
         if (!$user) {
             return response()->json([
@@ -85,10 +85,10 @@ class AuthController extends Controller
         $accessToken = Auth::user()->createToken('authToken');
 
         if ($request->remember_me) {
-            $accessToken->token->expires_at = Carbon::now()->addWeeks(1);
+            $accessToken->token->expires_at = Carbon::now()->addMonth(1);
         }
         return response()->json([
-            'user' => Auth::user()->makeHidden(['created_at', 'updated_at']),
+            'user' => $user,
             'roles' => $roles,
             'token' => $accessToken], 201);
     }
@@ -100,7 +100,7 @@ class AuthController extends Controller
         $user = new User();
 
         $user->identification = strtoupper(trim($dataUser['identification']));
-        $user->user_name = strtoupper(trim($dataUser['user_name']));
+        $user->user_name = trim($dataUser['user_name']);
         $user->first_name = strtoupper(trim($dataUser['first_name']));
         $user->first_lastname = strtoupper(trim($dataUser['first_lastname']));
         $user->birthdate = trim($dataUser['birthdate']);

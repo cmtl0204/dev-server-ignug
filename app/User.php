@@ -2,10 +2,12 @@
 
 namespace App;
 
-use App\Models\Attendance;
+use App\Models\Attendance\Attendance;
 use App\Models\Ignug\Catalogue;
 use App\Models\Ignug\State;
 use App\Models\Ignug\Teacher;
+use App\Models\JobBoard\Company;
+use App\Models\JobBoard\Professional;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -35,6 +37,7 @@ class User extends Authenticatable implements Auditable
         'email',
         'email_verified_at',
         'password',
+        'change_password',
     ];
 
     /**
@@ -81,9 +84,19 @@ class User extends Authenticatable implements Auditable
         return $this->hasOne(Teacher::class);
     }
 
+    public function professional()
+    {
+        return $this->hasOne(Professional::class);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
+
     public function attendances()
     {
-        return $this->hasManyThrough(Attendance::class, Teacher::class);
+        return $this->morphMany(Attendance::class, 'attendanceable');
     }
 
     public function ethnicOrigin()
@@ -110,8 +123,15 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsTo(Catalogue::class);
     }
+
     public function bloodType()
     {
         return $this->belongsTo(Catalogue::class);
     }
+
+    public function attendance()
+    {
+        return $this->hasOneThrough(Attendance::class);
+    }
+
 }

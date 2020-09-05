@@ -24,6 +24,7 @@ class Workday extends Model implements Auditable
     protected $casts = [
         'start_time' => 'time:H:i:s',
         'end_time' => 'time:H:i:s',
+        'observations' => 'array',
     ];
 
     public function attendance()

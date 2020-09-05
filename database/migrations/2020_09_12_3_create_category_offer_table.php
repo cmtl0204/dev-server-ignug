@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCategoryOfferTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::connection('pgsql-job-board')->create('category_offer', function (Blueprint $table) {
@@ -21,11 +16,6 @@ class CreateCategoryOfferTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::connection('pgsql-job-board')->dropIfExists('category_offer');

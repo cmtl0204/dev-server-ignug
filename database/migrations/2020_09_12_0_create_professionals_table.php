@@ -16,7 +16,7 @@ class CreateProfessionalsTable extends Migration
         Schema::connection('pgsql-job-board')->create('professionals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('authentication.users');
-            $table->string('about_me', 300)->nullable();
+            $table->string('about_me', 500)->nullable();
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

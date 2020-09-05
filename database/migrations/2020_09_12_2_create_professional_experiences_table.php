@@ -17,12 +17,12 @@ class CreateProfessionalExperiencesTable extends Migration
             $table->id();
             $table->foreignId('professional_id')->constrained();
             $table->string('employer');
-            $table->foreignId('position_id')->constrained('catalogues');
-            $table->string('job_description');
+            $table->string('position', 100);
+            $table->string('job_description', 1000);
             $table->date('start_date');
-            $table->date('finish_date')->nullable();
-            $table->string('reason_leave');
-            $table->boolean('current_work')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('reason_leave', 1000);
+            $table->boolean('current_work')->default(false);
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

@@ -6,7 +6,19 @@ use App\Models\Attendance\Catalogue as AttendanceCatalogue;
 use App\Models\Ignug\Catalogue as IgnugCatalogue;
 use App\Role;
 use App\User;
-use \App\Models\Ignug\Teacher;
+use App\Models\Ignug\Teacher;
+use App\Models\JobBoard\Professional;
+use App\Models\JobBoard\AcademicFormation;
+use App\Models\JobBoard\Course;
+use App\Models\JobBoard\ProfessionalReference;
+use App\Models\JobBoard\ProfessionalExperience;
+use App\Models\JobBoard\Language;
+use App\Models\JobBoard\Ability;
+use App\Models\JobBoard\Category;
+use App\Models\JobBoard\Company;
+use App\Models\JobBoard\Offer;
+use App\Models\JobBoard\Catalogue as JobBoardCatalogue;
+use App\Models\JobBoard\Location as JobBoardLocation;
 
 class DatabaseSeeder extends Seeder
 {
@@ -513,19 +525,39 @@ class DatabaseSeeder extends Seeder
             'state_id' => 1,
         ]);
 
-
+        factory(Category::class, 100)->create();
+        factory(JobBoardCatalogue::class, 100)->create();
+        factory(JobBoardLocation::class, 100)->create();
         factory(User::class, 100)->create()->each(function ($user) {
             $user->teacher()->save(factory(Teacher::class)->make());
+            $professional = $user->professional()->save(factory(Professional::class)->make());
+            $professional->academicFormations()->save(factory(AcademicFormation::class)->make());
+            $professional->abilities()->save(factory(Ability::class)->make());
+            $professional->languages()->save(factory(Language::class)->make());
+            $professional->courses()->save(factory(Course::class)->make());
+            $professional->professionalExperiences()->save(factory(ProfessionalExperience::class)->make());
+            $professional->professionalReferences()->save(factory(ProfessionalReference::class)->make());
             $user->roles()->attach(1);
+        });
+        factory(User::class, 100)->create()->each(function ($user) {
+            $user->teacher()->save(factory(Teacher::class)->make());
+            $company = $user->company()->save(factory(Company::class)->make());
+            $offer = $company->offers()->save(factory(Offer::class)->make());
+            $offer->categories()->attach(random_int(1, 100));
+            $offer->professionals()->attach(random_int(1, 100));
+            $company->professionals()->attach(random_int(1, 100));
+            $user->roles()->attach(2);
         });
         // factory(App\Models\JobBoard::class, 10)->create();
 
         /*
+            drop schema if exists authentication cascade;
             drop schema if exists attendance cascade;
             drop schema if exists ignug cascade;
             drop schema if exists job_board cascade;
             drop schema if exists web cascade;
 
+            create schema authentication;
             create schema attendance;
             create schema ignug;
             create schema job_board;

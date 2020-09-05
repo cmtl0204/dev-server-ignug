@@ -14,11 +14,6 @@ class Teacher extends Model implements Auditable
     protected $connection = 'pgsql-ignug';
     protected $fillable = [];
 
-    public function attendances()
-    {
-        return $this->morphMany(Attendance::class, 'attendanceable');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);

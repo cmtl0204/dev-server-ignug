@@ -22,4 +22,24 @@ class Catalogue extends Model implements Auditable
     {
         return $this->belongsTo(State::class);
     }
+
+    public function applyFilters()
+    {
+        return function () {
+            foreach (request('filter', []) as $filter => $value) {
+                $scope = "scope" . ucfirst($filter);
+                if (!method_exists($this->model, $scope)) {
+                    abort(400, "The Filter '$filter' is not allowed");
+                }
+                $this->{$filter}($value);
+            }
+            return $this;
+        };
+    }
+
+    public function scopeName($query, $value)
+    {
+        if ($value)
+            return $query->where('name', 'LIKE', "%{$value}%");
+    }
 }
