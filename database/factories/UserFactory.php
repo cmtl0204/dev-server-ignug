@@ -35,7 +35,7 @@ $factory->define(User::class, function (Faker $faker) {
         'user_name' => $faker->numberBetween($min = 1000000000, $max = 9999999999),
         'email' => $faker->unique()->safeEmail,
         'state_id' => 1,
-        'password' => '$2y$10$Jspv6JzkO2O4EGxpCFiZquVdXfjozT5VdO9i0KfQn0Z4GxNYWRJIW', // password
+        'password' => '$2y$10$fojHGTDRXyjmcXSgE7/1xOubqUrv03AiQb.9lKKH4PxJfkoluZGxK', // 12345678
 
     ];
 });

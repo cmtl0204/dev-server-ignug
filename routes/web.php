@@ -17,19 +17,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::put('/', function (Request $request) {
-    $user = User::findOrFail(5);
-    $attendances = $user->attendances()
-        ->with(['workdays' => function ($query) {
-            $query->with('state');
-        }])->where('state_id', '<>', 3)->get();
+Route::get('/', function (Request $request) {
 
-    return response()->json([
-        'data' => [
-            'type' => 'attendances',
-            'attributes' => $attendances
-        ]
-    ], 200);
+    return \Illuminate\Support\Facades\Hash::make('12345678');
 });
 Route::get('password_generate', function () {
     return \Illuminate\Support\Facades\Hash::make('123');

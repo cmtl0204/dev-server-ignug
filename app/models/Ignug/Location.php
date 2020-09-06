@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Models\Attendance;
+namespace App\Models\Ignug;
 
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Ignug\State;
 
-class Catalogue extends Model implements Auditable
+class Location extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $connection = 'pgsql-attendance';
+    protected $connection = 'pgsql-job-board';
     protected $fillable = [
         'code',
-        'parent_code_id',
         'name',
         'type',
-        'icon'
+        'post_code'
     ];
 
     public function state()
@@ -24,13 +23,8 @@ class Catalogue extends Model implements Auditable
         return $this->belongsTo(State::class);
     }
 
-    public function tasks()
-    {
-        return $this->hasMany(Catalogue::class, 'parent_code_id');
-    }
-
     public function children()
     {
-        return $this->hasMany(Catalogue::class, 'parent_code_id');
+        return $this->hasMany(Location::class, 'parent_code_id');
     }
 }

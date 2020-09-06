@@ -42,4 +42,9 @@ class Catalogue extends Model implements Auditable
         if ($value)
             return $query->where('name', 'LIKE', "%{$value}%");
     }
+
+    public function children()
+    {
+        return $this->hasMany(Catalogue::class, 'parent_code_id');
+    }
 }

@@ -15,8 +15,7 @@ class CreateCataloguesTable extends Migration
     {
         Schema::connection('pgsql-ignug')->create('catalogues', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('parent_code_id')->nullable();
-            $table->foreign('parent_code_id')->references('id')->on('catalogues');
+            $table->foreignId('parent_code_id')->nullable()->constrained('catalogues');
             $table->string('code', 100);
             $table->string('name', 500);
             $table->string('type', 200);
