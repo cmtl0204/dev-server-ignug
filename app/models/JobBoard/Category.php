@@ -32,4 +32,10 @@ class Category extends Model implements Auditable
     {
         return $this->belongsTo(Category::class, 'parent_code_id');
     }
+
+    public function type()
+    {
+        return $this->belongsTo(Catalogue :: class);
+    }
+
 }

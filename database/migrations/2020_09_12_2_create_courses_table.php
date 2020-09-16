@@ -18,7 +18,7 @@ class CreateCoursesTable extends Migration
             $table->foreignId('professional_id')->constrained();
             $table->foreignId('event_type_id')->constrained('catalogues');
             $table->foreignId('institution_id')->constrained('catalogues');
-            $table->foreignId('type_certification_id')->constrained('catalogues');
+            $table->foreignId('certification_type_id')->constrained('catalogues');
             $table->string('event_name');
             $table->date('start_date');
             $table->date('end_date');

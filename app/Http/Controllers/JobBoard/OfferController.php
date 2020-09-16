@@ -14,14 +14,15 @@ use Illuminate\Http\Request;
 class OfferController extends Controller
 {
 
-    /*
-     * Grupo 2
+    /**
+     * Obtiene todas las ofertas activas dentro del rango de fecha actual.
      */
     function getAllOffers()
     {
         $now = Carbon::now();
-        $offers = Offer::where('state_id', '1')
-            ->where('end_date', '>=', $now->format('Y-m-d'))
+        $offers = Offer::with('parent')->with('children_category')
+            ->with('city')->with('province')->where('state_id', '1')
+            ->where('finish_date', '>=', $now->format('Y-m-d'))
             ->where('start_date', '<=', $now->format('Y-m-d'))
             ->get();
         return response()->json(['offers' => $offers], 200);
@@ -51,9 +52,30 @@ class OfferController extends Controller
         $now = Carbon::now();
         $data = $request->json()->all();
         $dataFilter = $data['filters'];
-        $offers = Offer::orWhere($dataFilter['conditions'])
-            ->where('state', 'ACTIVE')
-            ->where('end_date', '>=', $now->format('Y-m-d'))
+        $offers = Offer::with(['father_category' => function ($query) use($dataFilter) {
+            foreach ($dataFilter['conditionsCategoryChildren'] as $key) {
+                // $i++;
+                $query->orWhere($key);
+            }
+
+            // $query->orWhere($dataFilter['conditionsCategoryFather']);
+        }])
+            ->with(['children_category' => function ($query) use($dataFilter) {
+                // $query->orWhere($dataFilter['conditionsCategoryChildren']);
+                foreach ($dataFilter['conditionsCategoryChildren'] as $key) {
+                    // $i++;
+                    $query->orWhere($key);
+                }
+            }])
+            ->with(['city' => function ($query) use($dataFilter) {
+                $query->orWhere($dataFilter['conditionsCity']);
+            }])
+            ->with(['province' => function ($query) use($dataFilter) {
+                $query->orWhere($dataFilter['conditionsProvince']);
+            }])
+            ->orWhere($dataFilter['conditions'])
+            ->where('state_id', 1)
+            ->where('finish_date', '>=', $now->format('Y-m-d'))
             ->where('start_date', '<=', $now->format('Y-m-d'))
             ->orderby($request->field, $request->order)
             ->paginate($request->limit);
@@ -83,10 +105,9 @@ class OfferController extends Controller
         try {
             $professional = Professional::where('user_id', $request->user_id)->first();
             if ($professional) {
-                $appliedOffer = DB::table('offer_professional')
+                $appliedOffer = DB::table('job_board.offer_professional')
                     ->where('offer_id', $request->offer_id)
                     ->where('professional_id', $professional->id)
-                    ->where('state_id', '1')
                     ->first();
                 if ($appliedOffer) {
                     return response()->json(true, 200);
@@ -112,6 +133,42 @@ class OfferController extends Controller
         }
     }
 
+    function applyOffer(Request $request)
+    {
+        try {
+            $data = $request->json()->all();
+            $user = $data['user'];
+            $offer = $data['offer'];
+            $professional = Professional::where('user_id', $user['id'])->first();
+            if ($professional) {
+                $appliedOffer = DB::table('job_board.offer_professional')
+                    ->where('offer_id', $offer['id'])
+                    ->where('professional_id', $professional->id)
+                    ->first();
+                if (!$appliedOffer) {
+                    $professional->offers()->attach($offer['id']);
+                    return response()->json(true, 201);
+                } else {
+                    return response()->json(false, 201);
+                }
+            } else {
+                return response()->json(null, 404);
+            }
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e, 405);
+        } catch (NotFoundHttpException  $e) {
+            return response()->json($e, 405);
+        } catch (QueryException $e) {
+            return response()->json($e, 409);
+        } catch (\PDOException $e) {
+            return response()->json($e, 409);
+        } catch (Exception $e) {
+            return response()->json($e, 500);
+        } catch (Error $e) {
+            return response()->json($e, 500);
+        }
+
+    }
     /*
      * FinGrupo 2
      */

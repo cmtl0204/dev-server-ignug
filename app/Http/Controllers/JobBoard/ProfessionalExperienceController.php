@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\JobBoard\Professional;
 use App\Models\JobBoard\ProfessionalExperience;
-
+use App\Http\Controllers\Controller;
 
 class ProfessionalExperienceController extends Controller
 {

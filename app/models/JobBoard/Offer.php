@@ -13,6 +13,7 @@ use App\Models\Ignug\State;
 class Offer extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
+
     protected $connection = 'pgsql-job-board';
 
     protected $fillable = [
@@ -49,6 +50,7 @@ class Offer extends Model implements Auditable
     {
         return $this->belongsToMany(Professional::class)->withTimestamps();
     }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class)->withTimestamps();
@@ -63,4 +65,5 @@ class Offer extends Model implements Auditable
     {
         return $this->belongsTo(State::class);
     }
+
 }

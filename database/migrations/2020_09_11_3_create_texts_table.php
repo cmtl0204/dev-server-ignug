@@ -20,6 +20,8 @@ class CreateTextsTable extends Migration
             $table->text('title')->nullable();
             $table->text('subtitle')->nullable();
             $table->text('description');
+            $table->foreignId('status_id')->constrained('catalogues');
+            $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });
     }

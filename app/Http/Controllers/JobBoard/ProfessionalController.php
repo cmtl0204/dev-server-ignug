@@ -27,50 +27,43 @@ class ProfessionalController extends Controller
     {
         $data = $request->json()->all();
         $dataFilter = $data['filters'];
-        $postulants = Professional::
-        join('academic_formations', 'academic_formations.professional_id', '=', 'professionals.id')
-            ->orWhere($dataFilter['conditions'])
-            ->where('professionals.state_id', 1)
-            ->where('professionals.about_me', '<>', '')
-            ->where('academic_formations.state_id', 1)
+        $professionals = Professional::
+        whereHas('academicFormations.category', function($query) use ($dataFilter) {
+            $query->whereIn('code', $dataFilter['conditions']['code'])
+                ->orWhereIn('name', $dataFilter['conditions']['text'])
+                ->where('state_id', 1);
+        })->with('academicFormations.category')
+            ->with(['state' => function ($query) {
+                $query->where('code', '1');
+            }])
+            ->where('about_me', '<>', '')
             ->orderby('professionals.' . $request->field, $request->order)
             ->paginate($request->limit);
         return response()->json([
             'pagination' => [
-                'total' => $postulants->total(),
-                'current_page' => $postulants->currentPage(),
-                'per_page' => $postulants->perPage(),
-                'last_page' => $postulants->lastPage(),
-                'from' => $postulants->firstItem(),
-                'to' => $postulants->lastItem()
-            ], 'postulants' => $postulants], 200);
+                'total' => $professionals->total(),
+                'current_page' => $professionals->currentPage(),
+                'per_page' => $professionals->perPage(),
+                'last_page' => $professionals->lastPage(),
+                'from' => $professionals->firstItem(),
+                'to' => $professionals->lastItem()
+            ], 'postulants' => $professionals], 200);
 
     }
 
     //Método para filtrar postulantes segun cambios
     function filterPostulantsFields(Request $request)
     {
-        /*
-        $postulants = Professional::with([])
-        join('academic_formations', 'academic_formations.professional_id', '=', 'professionals.id')
-            ->where('professionals.about_me', '<>', '')
-            ->where('professionals.state_id', 1)
-            ->where('academic_formations.state_id', 1)
-        */
-        $professionals = Professional::with(['academicFormations' => function ($query) use ($request) {
-            $query->with(['professionalDegree' => function ($query1) use ($request) {
-                $query1->where('name', 'like', strtoupper($request->filter) . '%');
-            }])
-            ->where('state_id', 1);
-            //->where('name', 'like', strtoupper($request->filter) . '%')
-            //->where('name', 'like', strtoupper($request->filter) . '%');
-        }])
+        $professionals = Professional::
+        whereHas('academicFormations.category', function($query) use ($request) {
+            $query->where('name', 'like', '%' . strtoupper($request->filter) . '%')
+                ->orWhere('code', 'like', '%'.strtoupper($request->filter). '%')
+                ->where('state_id', 1);
+        })->with('academicFormations.category')
             ->with(['state' => function ($query) {
                 $query->where('code', '1');
             }])
             ->where('about_me', '<>', '')
-            //->where('career', 'like', strtoupper($request->filter) . '%')
-            //->OrWhere('professional_degree', 'like', '%' . strtoupper($request->filter) . '%')
             ->orderby('professionals.' . $request->field, $request->order)
             ->paginate($request->limit);
         return response()->json([
@@ -90,10 +83,9 @@ class ProfessionalController extends Controller
     /* Metodos para gestionar los datos personales*/
     function getProfessionals(Request $request)
     {
-        $professionals = Professional::with(['academicFormations' => function ($query) {
-                $query->with('professionalDegree')
-                ->where('state_id', 1);
-            }])
+        $professionals = Professional::with(['academicFormations.category' => function ($query) {
+            $query->where('state_id', 1);
+        }])
             ->with(['state' => function ($query) {
                 $query->where('code', '1');
             }])
@@ -206,9 +198,6 @@ class ProfessionalController extends Controller
     /*
      * Grupo 3
      */
-    // comparar con codido de la tabla estado, no con el id
-
-    /* Metodo para obtener todas las ofertas a las que aplico el profesional*/
     function getAppliedOffers(Request $request)
     {
         try {
@@ -223,7 +212,7 @@ class ProfessionalController extends Controller
             $oportunidades = [];
 
             foreach ($professional as $profesion) {
-                array_push($oportunidades, $profesion->offers);
+                $oportunidades = $profesion->offers;
             }
 
             return response()->json([
@@ -249,7 +238,7 @@ class ProfessionalController extends Controller
     function getInterestedCompanies(Request $request)
     {
         try {
-            $companies = Professional::with(['companies' => function ($query) {
+            $professional = Professional::with(['companies' => function ($query) {
                 $query->with(['state' => function ($queryDos) {
                     $queryDos->where('code', '1');
                 }]);
@@ -257,11 +246,11 @@ class ProfessionalController extends Controller
                 $queryTres->where('code', '1');
             }])->where('user_id', $request->user_id)->get();
 
-//            $companiesArray = [];
-//
-//            foreach ($professional as $profesion) {
-//                array_push($oportunidades, $profesion->offers);
-//            }
+            $companies = [];
+
+            foreach ($professional as $profesion) {
+                $companies = $profesion->companies;
+            }
 
             return response()->json([
                 'data' => [
@@ -282,19 +271,50 @@ class ProfessionalController extends Controller
         }
     }
 
-    public function getAllprofessionalsTesteo()
+    function getAllprofessionalsTesteo()
     {
         return Professional::with('offers')->get();
     }
 
-    function getAllProfessionals()
+    function getAllcompaniesTesteo()
     {
-        $professionals = Professional::join('academic_formations', 'academic_formations.professional_id', 'professionals.id')
-            ->with('academicFormations')
-            ->where('professionals.about_me', '<>', '')
-            ->where('professionals.state', 'ACTIVE')->get();
-        return response()->json(['professionals' => $professionals], 200);
+        return Professional::with('companies')->get();
+    }
 
+    function desactivateOffer(Request $request)
+    {
+        try {
+            $professional = Professional::where('user_id', $request->user_id)->first();
+            $offer = Offer::where('id', $request->offer_id)->first();
+
+            $opportunity = DB::table('offer_professional')
+                ->where('professional_id', $professional->id)
+                ->where('offer_id', $offer->id)
+                ->first();
+
+            $opportunity->update([
+                'status_id' => 2
+            ]);
+
+            return response()->json([
+                'data' => [
+                    'code' => '1',
+                    'opportunity' => 'se ha desvinculado de la oferta',
+                    'offer' => $opportunity
+                ]
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e, 405);
+        } catch (NotFoundHttpException  $e) {
+            return response()->json($e, 405);
+        } catch (QueryException $e) {
+            return response()->json($e, 400);
+        } catch (Exception $e) {
+            return response()->json($e, 501);
+        } catch (Error $e) {
+            return response()->json($e, 502);
+        }
     }
 
     /*

@@ -17,11 +17,15 @@ class WorkdayController extends Controller
 {
     public function all(Request $request)
     {
-        $user = User::findOrFail($request->user_id);
-        $attendances = $user->attendances()
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
+        $attendances = $teacher->attendances()
             ->with(['workdays' => function ($query) {
-                $query->where('state_id', '<>', 3);
-            }])->where('state_id', '<>', 3)->get();
+                $query->with(['state' => function ($query) {
+                    $query->where('code', '1');
+                }]);
+            }])->with(['state' => function ($query) {
+                $query->where('code', '1');
+            }])->get();
 
         return response()->json([
             'data' => [
@@ -39,11 +43,11 @@ class WorkdayController extends Controller
         $data = $request->json()->all();
         $dataAttendance = $data['attendance'];
         $dataWorkday = $data['workday'];
-        $user = User::findOrFail($request->user_id);
-        $attendance = $user->attendances()->where('date', $currentDate)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
+        $attendance = $teacher->attendances()->where('date', $currentDate)->first();
 
         if (!$attendance) {
-            $attendance = $this->createAttendance($currentDate, $user, $dataAttendance);
+            $attendance = $this->createAttendance($currentDate, $teacher, $dataAttendance);
         }
         $dataWorkday['start_time'] = $currentTime;
         $this->createWorkday($dataWorkday, $attendance);
@@ -53,12 +57,14 @@ class WorkdayController extends Controller
     public function getCurrenDate(Request $request)
     {
         $currentDate = Carbon::now()->format('Y/m/d/');
-        $user = User::findOrFail($request->user_id);
-        $attendance = $user->attendances()->where('date', $currentDate)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
+        $attendance = $teacher->attendances()->where('date', $currentDate)->first();
         if (!$attendance) {
             return response()->json(['data' => null], 200);
         }
-        $workdays = $attendance->workdays()->with('type')->where('state_id', '<>', 3)->orderBy('start_time')->get();
+        $workdays = $attendance->workdays()->with('type')->with(['state' => function ($query) {
+            $query->where('code', '1');
+        }])->orderBy('start_time')->get();
         return response()->json([
             'data' => [
                 'type' => 'workdays',
@@ -72,7 +78,7 @@ class WorkdayController extends Controller
 
     public function update(Request $request)
     {
-        $currentDate = Carbon::now()->format('Y/m/d/ H:i:s');
+        $currentDate = Carbon::now()->format('Y-m-d | H:i:s');
         $data = $request->json()->all();
         $dataWorkday = $data['workday'];
         $workday = Workday::findOrFail($dataWorkday['id']);
@@ -80,13 +86,19 @@ class WorkdayController extends Controller
             $workday->observations = array();
         }
         $user = User::findOrFail($request->user_id);
-        array_push($dataWorkday['observations'], 'Motivo: ' . $dataWorkday['observations'][0]);
-        array_push($dataWorkday['observations'], 'Hora inicio anterior: ' . $workday->start_time . 'Hora inicio nueva: ' . $dataWorkday['start_time']);
-        array_push($dataWorkday['observations'], 'Hora fin anterior: ' . $workday->end_time . 'Hora fin nueva: ' . $dataWorkday['end_time']);
+        $dataWorkday['observations'][0] = 'Motivo: ' . $dataWorkday['observations'][0];
+        if ($dataWorkday['start_time'] != $workday->start_time) {
+            array_push($dataWorkday['observations'], 'Hora inicio anterior: ' . $workday->start_time);
+            array_push($dataWorkday['observations'], 'Hora inicio nuevo: ' . $dataWorkday['start_time']);
+        }
+        if ($dataWorkday['end_time'] != $workday->end_time) {
+            array_push($dataWorkday['observations'], 'Hora fin anterior: ' . $workday->end_time);
+            array_push($dataWorkday['observations'], 'Hora fin nuevo: ' . $dataWorkday['end_time']);
+        }
         array_push($dataWorkday['observations'], 'Modificado por: ' . $user->identification
             . ' ' . $user->first_lastname . ' ' . $user->second_lastname
-            . ' ' . $user->first_name . ' ' . $user->second_name . ' - '
-            . ' ' . $currentDate . ')');
+            . ' ' . $user->first_name . ' ' . $user->second_name
+            . ' (' . $currentDate . ')');
         $observations = array($dataWorkday['observations']);
 
         if (!Validator::make($dataWorkday, ['start_time' => 'required', 'end_time' => 'required'])->fails()) {
@@ -159,11 +171,13 @@ class WorkdayController extends Controller
     public function destroy($id)
     {
         $workday = Workday::findOrFail($id);
-        $state = State::findOrFail($id);
+        $state = State::where('code', '3')->first();
         $workday->state()->associate($state);
         $workday->save();
         $workdays = Workday::where('attendance_id', $workday['attendance_id'])->orderBy('start_time')
-            ->where('state_id', '<>', 3)
+            ->with(['state' => function ($query) {
+                $query->where('code', '1');
+            }])
             ->get();
         return response()->json([
             'data' => [
@@ -173,7 +187,7 @@ class WorkdayController extends Controller
         ], 200);
     }
 
-    public function createAttendance($currentDate, $user, $attendance)
+    public function createAttendance($currentDate, $teacher, $attendance)
     {
         $newAttendance = new Attendance([
             'date' => $currentDate,
@@ -183,7 +197,7 @@ class WorkdayController extends Controller
         $type = Catalogue::where('code', $attendance['type'])->first();
         $newAttendance->state()->associate($state);
         $newAttendance->type()->associate($type);
-        $newAttendance->attendanceable()->associate($user);
+        $newAttendance->attendanceable()->associate($teacher);
         $newAttendance->save();
         return $newAttendance;
     }

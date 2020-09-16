@@ -15,12 +15,11 @@ class CreateCategoriesTable extends Migration
     {
         Schema::connection('pgsql-job-board')->create('categories', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('parent_code_id')->nullable();
-            $table->foreign('parent_code_id')->references('id')->on('categories');
-            $table->string('code', 100);
-            $table->string('name', 500);
-            $table->string('type', 200);
-            $table->string('icon', 200)->nullable();
+            $table->foreignId('parent_code_id')->nullable()->constrained('categories');
+            $table->text('code', 100);
+            $table->text('name', 500);
+            $table->foreignId('type_id')->constrained('catalogues');
+            $table->text('icon', 200)->nullable();
             $table->foreignId('state_id')->constrained('ignug.states');
             $table->timestamps();
         });

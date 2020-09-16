@@ -24,7 +24,7 @@ class Professional extends Model implements Auditable
 
     public function offers()
     {
-        return $this->belongsToMany(Offer::class)->withTimestamps();
+        return $this->belongsToMany(Offer::class)->withPivot('id', 'status_id')->withTimestamps();
     }
 
     public function companies()

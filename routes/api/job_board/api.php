@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -78,7 +79,7 @@ Route::group(['prefix' => 'categories'], function () {
 // Rutas ofertas
 Route::group(['prefix' => 'offers'], function () {
     // Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('', 'JobBoard\OfferController@getAllOffers'); // Trae todas las ofertas.
+    Route::get('all', 'JobBoard\OfferController@getAllOffers'); // Trae todas las ofertas.
     Route::get('/opportunities', 'JobBoard\OfferController@getOffers'); // Trae todas las ofertas con filtros
     Route::post('/filter', 'JobBoard\OfferController@filterOffers'); // Filtra las ofertas segun el buscador.
     Route::get('/opportunities/validateAppliedOffer', 'JobBoard\OfferController@validateAppliedOffer');
@@ -119,6 +120,15 @@ Route::group(['prefix' => 'offers'], function () {
     Route::get('/professionales-ofertas', 'JobBoard\ProfessionalController@getAllprofessionalsTesteo');
     Route::get('/companias-interesadas', 'JobBoard\ProfessionalController@getInterestedCompanies');
 });
+
+Route::group(['prefix' => 'opportunities'], function () {
+    Route::get('/', 'JobBoard\OfferController@indexOffers');
+    Route::get('/applied-offers', 'JobBoard\ProfessionalController@getAppliedOffers');
+    Route::get('/interested-companies', 'JobBoard\ProfessionalController@getInterestedCompanies');
+    Route::put('/unlink-offer', 'JobBoard\ProfessionalController@unlinkOffer');
+    Route::get('/professionals-offers', 'JobBoard\ProfessionalController@getAllprofessionalsTesteo');
+    Route::get('/professional-companies', 'JobBoard\ProfessionalController@getAllcompaniesTesteo');
+});
 /*
  * FinGrupo 3
  */
@@ -138,13 +148,13 @@ Route::apiResource('academic_formations', 'JobBoard\AcademicFormationController'
 Route::apiResource('professional_references', 'JobBoard\ProfessionalReferenceController');
 // });
 //Route::group(['middleware'=> 'auth:api'], function () {
-Route::apiResource('abilities','   JobBoard\AbilityController');
+Route::apiResource('abilities','JobBoard\AbilityController');
 //});
 //Route::group(['middleware'=> 'auth:api'], function () {
-Route::apiResource('professional_experiences','   JobBoard\ProfessionalExperienceController');
+Route::apiResource('professional_experiences','JobBoard\ProfessionalExperienceController');
 //});
 // Route::group(['middleware' => 'auth:api'], function () {
-Route::apiResource('offers', 'JobBoard\OfferReferenceController');
+//Route::apiResource('offers', 'JobBoard\OfferReferenceController');
 // });
 Route::group(['prefix' => 'professionals'], function () {
     Route::group(['middleware' => 'auth:api'], function () {

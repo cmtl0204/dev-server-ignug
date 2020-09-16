@@ -13,7 +13,7 @@ $factory->define(Course::class, function (Faker $faker) {
         'start_date' => $faker->date,
         'end_date' => $faker->date,
         'hours' => $faker->time,
-        'type_certification_id' => random_int(1, 100),
+        'certification_type_id' => random_int(1, 100),
         'state_id' => 1
     ];
 });

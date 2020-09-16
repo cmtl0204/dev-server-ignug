@@ -5,7 +5,6 @@ namespace App\Models\Attendance;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Ignug\State;
-use App\Models\Attendance\Catalogue;
 
 class Workday extends Model implements Auditable
 {

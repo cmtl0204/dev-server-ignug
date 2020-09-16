@@ -15,21 +15,19 @@ class CreateUsersTable extends Migration
     {
         Schema::connection('pgsql-authentication')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ethnic_origin_id')->constrained('ignug.catalogues');
-            $table->foreignId('location_id')->constrained('ignug.catalogues');
+            $table->foreignId('ethnic_origin_id')->nullable()->constrained('ignug.catalogues');
+            $table->foreignId('location_id')->nullable()->constrained('ignug.locations');
             $table->foreignId('identification_type_id')->constrained('ignug.catalogues');
             $table->string('identification', 20);
-            $table->string('postal_code', 20)->nullable();
-            $table->string('first_name', 1000);
+            $table->string('first_name', 1000)->nullable();
             $table->string('second_name', 100)->nullable();
-            $table->string('first_lastname', 100);
+            $table->string('first_lastname', 100)->nullable();
             $table->string('second_lastname', 100)->nullable();
-            $table->foreignId('sex_id')->constrained('ignug.catalogues');
-            $table->foreignId('gender_id')->constrained('ignug.catalogues');
+            $table->foreignId('sex_id')->nullable()->constrained('ignug.catalogues');
+            $table->foreignId('gender_id')->nullable()->constrained('ignug.catalogues');
             $table->string('personal_email', 100)->nullable()->unique();
             $table->date('birthdate')->nullable();
-            $table->bigInteger('blood_type_id')->nullable();
-            $table->foreign('blood_type_id')->references('id')->on('ignug.catalogues');
+            $table->foreignId('blood_type_id')->nullable()->constrained('ignug.catalogues');
             $table->string('user_name', 25);
             $table->string('email', 100)->unique();
             $table->timestamp('email_verified_at')->nullable();

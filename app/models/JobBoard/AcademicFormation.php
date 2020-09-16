@@ -10,6 +10,7 @@ class AcademicFormation extends Model implements Auditable
 {
 
     use \OwenIt\Auditing\Auditable;
+
     protected $connection = 'pgsql-job-board';
 
     protected $fillable = [
@@ -29,14 +30,9 @@ class AcademicFormation extends Model implements Auditable
         return $this->belongsTo(Category::class);
     }
 
-    public function professionalDegree()
-    {
-        return $this->belongsTo(Catalogue::class);
-    }
-
     public function state()
     {
-        return $this->hasOne(State :: class);
+        return $this->belongsTo(State :: class);
     }
 
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\JobBoard\Professional;
 use App\Models\JobBoard\Ability;
+use App\Http\Controllers\Controller;
 
 class AbilityController extends Controller
 {

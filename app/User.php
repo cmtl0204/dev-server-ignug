@@ -26,7 +26,6 @@ class User extends Authenticatable implements Auditable
     protected $connection = 'pgsql-authentication';
     protected $fillable = [
         'identification',
-        'postal_code',
         'first_name',
         'second_name',
         'first_lastname',
@@ -94,11 +93,6 @@ class User extends Authenticatable implements Auditable
         return $this->hasOne(Company::class);
     }
 
-    public function attendances()
-    {
-        return $this->morphMany(Attendance::class, 'attendanceable');
-    }
-
     public function ethnicOrigin()
     {
         return $this->belongsTo(Catalogue::class);
@@ -127,11 +121,6 @@ class User extends Authenticatable implements Auditable
     public function bloodType()
     {
         return $this->belongsTo(Catalogue::class);
-    }
-
-    public function attendance()
-    {
-        return $this->hasOneThrough(Attendance::class);
     }
 
 }
