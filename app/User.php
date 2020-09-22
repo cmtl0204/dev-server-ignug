@@ -36,7 +36,7 @@ class User extends Authenticatable implements Auditable
         'email',
         'email_verified_at',
         'password',
-        'change_password',
+        'change_password'
     ];
 
     /**

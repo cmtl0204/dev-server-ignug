@@ -24,14 +24,9 @@ class TaskController extends Controller
         ], 200);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function all(Request $request)
     {
-        $teacher = Teacher::where('user_id',$request->user_id)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
         $attendances = $teacher->attendances()
             ->with(['tasks' => function ($query) {
                 $query->where('state_id', '<>', '3');
@@ -47,7 +42,7 @@ class TaskController extends Controller
 
     public function getHistory(Request $request)
     {
-        $teacher = Teacher::where('user_id',$request->user_id)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
         $attendances = $teacher->attendances()
             ->with(['tasks' => function ($query) {
                 $query->with('type')->where('state_id', '<>', 3);
@@ -65,19 +60,13 @@ class TaskController extends Controller
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $currentDate = Carbon::now()->format('Y/m/d/');
         $data = $request->json()->all();
         $dataTask = $data['task'];
 
-        $teacher = Teacher::where('user_id',$request->user_id)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
         $attendance = $teacher->attendances()->where('date', $currentDate)->first();
         if ($attendance) {
             $this->createTask($dataTask, $attendance);
@@ -99,15 +88,10 @@ class TaskController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getCurrenDate(Request $request)
     {
         $currentDate = Carbon::now()->format('Y/m/d/');
-        $teacher = Teacher::where('user_id',$request->user_id)->first();
+        $teacher = Teacher::where('user_id', $request->user_id)->first();
         $attendance = $teacher->attendances()->where('date', $currentDate)->first();
         if (!$attendance) {
             return response()->json(['data' => null], 200);
@@ -124,13 +108,6 @@ class TaskController extends Controller
         ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(Request $request)
     {
         $data = $request->json()->all();
@@ -152,11 +129,6 @@ class TaskController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         $task = Task::findOrFail($id);

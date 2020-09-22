@@ -18,6 +18,26 @@ class Catalogue extends Model implements Auditable
         'icon'
     ];
 
+    public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtolower($value);
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
+    public function setTypeAttribute($value)
+    {
+        $this->attributes['type'] = strtolower($value);
+    }
+
+    public function setIconAttribute($value)
+    {
+        $this->attributes['icon'] = strtolower($value);
+    }
+
     public function state()
     {
         return $this->belongsTo(State::class);
@@ -46,5 +66,10 @@ class Catalogue extends Model implements Auditable
     public function children()
     {
         return $this->hasMany(Catalogue::class, 'parent_code_id');
+    }
+
+    public function parentCode()
+    {
+        return $this->belongsTo(Catalogue::class, 'parent_code_id');
     }
 }

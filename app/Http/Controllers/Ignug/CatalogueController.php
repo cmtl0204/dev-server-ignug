@@ -4,77 +4,87 @@ namespace App\Http\Controllers\Ignug;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ignug\Catalogue;
-use App\User;
+use App\Models\Ignug\State;
 use Illuminate\Http\Request;
 
 class CatalogueController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function filter(Request $request)
+    public function index()
     {
-        $catalogues = Catalogue::where('type', $request->type)->orderBy('name')->get();
         return response()->json([
-                'data' => [
-                    'catalogues' => $catalogues
-                ]]
-            , 200);
+            'data' => [
+                'catalogues' => Catalogue::with('parentCode')->get()
+            ]]);
     }
 
-    public function index(Request $request)
-    {
-
-        $users = User::with(['ethnicOrigin' => function ($query) use ($request) {
-            $query->where('name', 'LIKE', '%' . $request->value . '%');
-        }])->get();
-        return $users;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Catalogue $catalogue
-     * @return \Illuminate\Http\Response
-     */
     public function show(Catalogue $catalogue)
     {
-        //
+        return response()->json([
+            'data' => [
+                'catalogue' => $catalogue
+            ]]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Catalogue $catalogue
-     * @return \Illuminate\Http\Response
-     */
+    public function store(Request $request)
+    {
+        $data = $request->json()->all();
+        $dataCatalogue = $data['catalogue'];
+        $dataParentCode = $data['parent_code'];
+
+        $catalogue = new Catalogue();
+        $catalogue->code = $dataCatalogue['code'];
+        $catalogue->name = $dataCatalogue['name'];
+        $catalogue->icon = $dataCatalogue['icon'];
+        $catalogue->type = $dataCatalogue['type'];
+
+        $state = State::where('code', '1')->first();
+        $parentCode = Catalogue::findOrFail($dataParentCode['id']);
+
+        $catalogue->state()->associate($state);
+        $catalogue->parentCode()->associate($parentCode);
+
+        $catalogue->save();
+
+        return response()->json([
+            'data' => [
+                'catalogues' => $catalogue
+            ]
+        ], 201);
+    }
+
     public function update(Request $request, Catalogue $catalogue)
     {
-        //
+
+        $data = $request->json()->all();
+        $dataCatalogue = $data['catalogue'];
+//        $dataParentCode = $data['parent_code'];
+
+//        $catalogue->code = $dataCatalogue['code'];
+        $catalogue->name = $dataCatalogue['name'];
+        $catalogue->icon = $dataCatalogue['icon'];
+        $catalogue->type = $dataCatalogue['type'];
+
+//        $parentCode = Catalogue::findOrFail($dataParentCode['id']);
+
+//        $catalogue->parentCode()->associate($parentCode);
+        $catalogue->save();
+        return response()->json([
+            'data' => [
+                'catalogue' => $catalogue
+            ]
+        ], 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Catalogue $catalogue
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Catalogue $catalogue)
     {
-        //
+//        $catalogue->delete();
+        $state = State::where('code', '3')->first();
+        $catalogue->state()->associate($state);
+        $catalogue->save();
+        return response()->json([
+            'data' => [
+                'catalogue' => $catalogue
+            ]
+        ], 201);
     }
 }

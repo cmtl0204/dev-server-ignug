@@ -80,10 +80,10 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api/attendance/api.php'));
-        Route::prefix('api/raffle')
+        Route::prefix('api/Enterprise')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/api/raffle/api.php'));
+            ->group(base_path('routes/api/Enterprise/api.php'));
         Route::prefix('api/job_board')
             ->middleware('api')
             ->namespace($this->namespace)
@@ -100,10 +100,10 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api/ignug/api.php'));
-        Route::prefix('api/v7')
+        Route::prefix('api/teacher_eval')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/api/v7/api.php'));
+            ->group(base_path('routes/api/teacher_eval/api.php'));
         Route::prefix('api/v8')
             ->middleware('api')
             ->namespace($this->namespace)

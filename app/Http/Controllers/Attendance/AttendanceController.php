@@ -14,13 +14,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function summary(Request $request)
     {
+
         $attendances = DB::select("
         select
         attendances.id,
@@ -67,8 +63,18 @@ class AttendanceController extends Controller
                     }]);
                 }])
                     ->with(['state' => function ($query) {
-                    $query->where('code', '1');
-                }]);
+                        $query->where('code', '1');
+                    }]);
+            }])
+            ->with(['tasks' => function ($query) {
+                $query->with(['type' => function ($query) {
+                    $query->with(['state' => function ($query) {
+                        $query->where('code', '1');
+                    }]);
+                }])
+                    ->with(['state' => function ($query) {
+                        $query->where('code', '1');
+                    }]);
             }])
             ->where('attendanceable_type', $alias)
             ->whereBetween('date', [$request->start_date, $request->end_date])
@@ -83,24 +89,20 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-
     public function store(Request $request)
     {
         //
     }
-
 
     public function show(Attendance $attendance)
     {
         //
     }
 
-
     public function update(Request $request, Attendance $attendance)
     {
         //
     }
-
 
     public function destroy(Attendance $attendance)
     {
