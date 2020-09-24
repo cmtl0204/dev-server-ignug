@@ -49,6 +49,34 @@ class WorkdayController extends Controller
         if (!$attendance) {
             $attendance = $this->createAttendance($currentDate, $teacher, $dataAttendance);
         }
+
+        if ($dataWorkday['type'] == 'work') {
+            $works = $attendance->workdays()->with(['type' => function ($query) {
+                $query->where('code', 'work');
+            }])->with(['state' => function ($query) {
+                $query->where('code', '1');
+            }])->get();
+
+            foreach ($works as $work) {
+                if ($work['state'] != null && $work['type'] != null && $work['end_time'] == null) {
+                    return response()->json(['data' => null], 403);
+                }
+            }
+        }
+        if ($dataWorkday['type'] == 'lunch') {
+            $lunchs = $attendance->workdays()->with(['type' => function ($query) {
+                $query->where('code', 'lunch');
+            }])->with(['state' => function ($query) {
+                $query->where('code', '1');
+            }])->get();
+
+            foreach ($lunchs as $lunch) {
+                if ($lunch['state'] != null && $lunch['type'] != null && $lunch['end_time'] == null) {
+                    return response()->json(['data' => null], 403);
+                }
+
+            }
+        }
         $dataWorkday['start_time'] = $currentTime;
         $this->createWorkday($dataWorkday, $attendance);
         return response()->json(['workdays' => $attendance->workdays()->where('state_id', '<>', 3)->orderBy('start_time')->get()]);
@@ -62,6 +90,7 @@ class WorkdayController extends Controller
         if (!$attendance) {
             return response()->json(['data' => null], 200);
         }
+
         $workdays = $attendance->workdays()->with('type')->with(['state' => function ($query) {
             $query->where('code', '1');
         }])->orderBy('start_time')->get();

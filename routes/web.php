@@ -22,6 +22,6 @@ Route::get('/', function (Request $request) {
     return \Illuminate\Support\Facades\Hash::make('12345678');
 });
 Route::get('password_generate', function () {
-    return \Illuminate\Support\Facades\Hash::make('123');
+    return \Illuminate\Support\Facades\Hash::make('1716190168');
 });
 
