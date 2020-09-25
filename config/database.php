@@ -42,7 +42,6 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -118,7 +117,6 @@ return [
             'schema' => env('DB_SCHEMA_IGNUG', 'public'),
             'sslmode' => 'prefer',
         ],
-
         'pgsql-web' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
@@ -145,7 +143,6 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-
     ],
 
     /*

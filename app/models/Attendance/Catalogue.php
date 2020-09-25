@@ -9,7 +9,6 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 class Catalogue extends Model
 {
-
     protected $connection = 'pgsql-attendance';
     protected $fillable = [
         'code',
@@ -29,6 +28,11 @@ class Catalogue extends Model
     }
 
     public function children()
+    {
+        return $this->hasMany(Catalogue::class, 'parent_code_id');
+    }
+
+    public function tasks()
     {
         return $this->hasMany(Catalogue::class, 'parent_code_id');
     }
